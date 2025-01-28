@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego: Adivina el Número</title>
+</head>
+<body>
+  <h1>Juego: Adivina el Número</h1>
+  <p>Adivina un número entre 1 y 100. Tienes 10 intentos.</p>
+  
+  <input type="text" id="guessInput" placeholder="Ingresa tu número">
+  <button id="checkButton">Probar</button>
+  <button id="resetButton" disabled>Volver a jugar</button>
+  
+  <p id="resultMessage"></p>
+  <p id="remainingAttempts">Intentos restantes: 10</p>
+  <p id="usedNumbers">Números probados: Ninguno</p>
+
+  <script>
+    let randomNumber = Math.floor(Math.random() * 100) + 1; // Número aleatorio entre 1 y 100
+    let attemptsLeft = 10;
+    let usedNumbers = [];
+
+  
+    const guessInput = document.getElementById('guessInput');
+    const checkButton = document.getElementById('checkButton');
+    const resetButton = document.getElementById('resetButton');
+    const resultMessage = document.getElementById('resultMessage');
+    const remainingAttempts = document.getElementById('remainingAttempts');
+    const usedNumbersDisplay = document.getElementById('usedNumbers');
+
+    
+    checkButton.addEventListener('click', () => {
+      const userGuess = parseInt(guessInput.value.trim());
+
+      
+      if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+        resultMessage.textContent = 'Por favor, ingresa un número válido entre 1 y 100.';
+        return;
+      }
+
+      
+      if (usedNumbers.includes(userGuess)) {
+        resultMessage.textContent = `Ya probaste el número ${userGuess}. Intenta con otro.`;
+        return;
+      }
+
+      
+      usedNumbers.push(userGuess);
+      usedNumbersDisplay.textContent = `Números probados: ${usedNumbers.join(', ')}`;
+
+      
+      if (userGuess === randomNumber) {
+        resultMessage.textContent = `¡Felicidades! Adivinaste el número ${randomNumber}.`;
+        finalizarJuego();
+        return;
+      }
+
+      
+      attemptsLeft--;
+      remainingAttempts.textContent = `Intentos restantes: ${attemptsLeft}`;
+
+      
+      if (userGuess < randomNumber) {
+        resultMessage.textContent = 'El número es mayor.';
+      } else {
+        resultMessage.textContent = 'El número es menor.';
+      }
+
+      
+      if (attemptsLeft === 0) {
+        resultMessage.textContent = `¡Se acabaron los intentos! El número era ${randomNumber}.`;
+        finalizarJuego();
+      }
+    });
+
+    
+    function finalizarJuego() {
+      guessInput.disabled = true; 
+      checkButton.disabled = true; 
+      resetButton.disabled = false; 
+    }
+
+    
+    resetButton.addEventListener('click', () => {
+    
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+      attemptsLeft = 10;
+      usedNumbers = [];
+      guessInput.disabled = false;
+      checkButton.disabled = false;
+      resetButton.disabled = true;
+      guessInput.value = '';
+      resultMessage.textContent = '';
+      remainingAttempts.textContent = 'Intentos restantes: 10';
+      usedNumbersDisplay.textContent = 'Números probados: Ninguno';
+    });
+  </script>
+</body>
+</html>
